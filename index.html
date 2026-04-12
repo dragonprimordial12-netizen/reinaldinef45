@@ -17,11 +17,37 @@
     overflow-x: hidden;
     cursor: crosshair;
   }
+
+  /* ========== CURSOR DE FUEGO ========== */
+  .fire-cursor {
+    position: fixed;
+    width: 18px; height: 18px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(circle, #fff 0%, #ffdd00 30%, #ff6600 60%, transparent 80%);
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+    filter: blur(1px);
+    transition: width 0.1s, height 0.1s;
+  }
+
   #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+  /* ========== LIGHTNING BORDER TOP ========== */
+  .lightning-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 200;
+    background: linear-gradient(90deg, transparent 0%, #ff2200 20%, #ffd700 50%, #ff2200 80%, transparent 100%);
+    animation: lightningFlow 2s linear infinite;
+  }
+  @keyframes lightningFlow {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
 
   /* NAV */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    position: fixed; top: 3px; left: 0; right: 0; z-index: 100;
     background: rgba(5,3,5,0.95); backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(255,80,0,0.2);
     display: flex; align-items: center; justify-content: space-between;
@@ -60,6 +86,36 @@
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpath d='M0 0 L60 60 M60 0 L0 60' stroke='rgba(255,120,0,0.03)' stroke-width='0.5'/%3E%3C/svg%3E") repeat;
     pointer-events: none;
   }
+
+  /* ========== ANILLO DE FUEGO HERO ========== */
+  .fire-ring {
+    position: absolute;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,80,0,0.15);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    animation: ringPulse 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .fire-ring::before {
+    content: '';
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,200,0,0.1);
+    animation: ringPulse 3s ease-in-out infinite 1s;
+  }
+  .fire-ring::after {
+    content: '';
+    position: absolute; inset: -18px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,50,0,0.07);
+    animation: ringPulse 3s ease-in-out infinite 2s;
+  }
+  @keyframes ringPulse {
+    0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+  }
+
   .eyebrow { font-size: 0.65rem; letter-spacing: 0.5em; color: #ff8c00; text-transform: uppercase; margin-bottom: 1rem; animation: fadeDown 1s ease both; }
   h1 {
     font-family: 'Cinzel Decorative', serif; font-size: clamp(1.8rem, 7vw, 4.8rem);
@@ -67,15 +123,42 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 30px rgba(255,100,0,0.5));
     animation: blazeIn 1.2s ease both;
+    position: relative; z-index: 2;
   }
+
+  /* ========== TEXTO ARDIENDO ========== */
+  .flame-text {
+    position: relative; display: inline-block;
+  }
+  .flame-text::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0;
+    background: linear-gradient(160deg, #ffe680 0%, #ff8c00 35%, #ff2200 65%, #9b00ff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: blur(12px); opacity: 0.6;
+    animation: textGlow 2s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes textGlow {
+    from { filter: blur(8px); opacity: 0.4; }
+    to { filter: blur(16px); opacity: 0.8; }
+  }
+
   .hero-tagline { margin-top: 1rem; font-family: 'IM Fell English', serif; font-style: italic; font-size: clamp(0.9rem, 2vw, 1.2rem); color: #d4b88a; max-width: 600px; margin-left: auto; margin-right: auto; }
   .cta-group { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 1.4s ease both 0.3s; }
   .btn {
     font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.2em;
     text-transform: uppercase; padding: 0.8rem 2rem; text-decoration: none;
     clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-    transition: all 0.25s;
+    transition: all 0.25s; position: relative; overflow: hidden;
   }
+  .btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .btn:hover::before { transform: translateX(100%); }
   .btn-fire { background: linear-gradient(135deg, #ff4500, #ff8c00); color: #fff; box-shadow: 0 0 20px rgba(255,80,0,0.4); }
   .btn-fire:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(255,120,0,0.6); }
   .btn-ghost { background: transparent; border: 1px solid rgba(255,140,0,0.4); color: #ff8c00; }
@@ -90,7 +173,7 @@
   .section-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.2rem, 3vw, 1.8rem); text-align: center; margin-bottom: 0.5rem; color: #ffd700; text-shadow: 0 0 15px rgba(255,215,0,0.3); }
   .section-sub { text-align: center; font-family: 'IM Fell English', serif; font-style: italic; color: #a08060; margin-bottom: 2.5rem; font-size: 0.9rem; }
 
-  /* CARDS GRID */
+  /* ========== CARDS GRID CON FUEGO ========== */
   .portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.8rem; }
   .portal-card {
     background: linear-gradient(145deg, rgba(20,8,5,0.9), rgba(10,3,15,0.9));
@@ -103,25 +186,63 @@
     text-decoration: none;
     display: block;
     color: inherit;
+    position: relative;
+    overflow: hidden;
   }
-  .portal-card:hover { transform: translateY(-6px); border-color: rgba(255,140,0,0.5); box-shadow: 0 15px 40px rgba(255,80,0,0.2); }
-  .portal-icon { font-size: 3rem; display: block; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(255,150,0,0.5)); }
+  /* Brillo inferior al hacer hover (lava) */
+  .portal-card::before {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 50%; transform: translateX(-50%);
+    width: 120%; height: 80px;
+    background: radial-gradient(ellipse, rgba(255,60,0,0.35) 0%, transparent 70%);
+    transition: bottom 0.4s ease, opacity 0.4s;
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* Línea ardiendo top */
+  .portal-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, #ff4d00, #ffd700, #ff4d00, transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .portal-card:hover::before { bottom: -10px; opacity: 1; }
+  .portal-card:hover::after { opacity: 1; }
+  .portal-card:hover { transform: translateY(-6px); border-color: rgba(255,140,0,0.5); box-shadow: 0 15px 40px rgba(255,80,0,0.2), 0 0 0 1px rgba(255,80,0,0.1); }
+  .portal-icon { font-size: 3rem; display: block; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(255,150,0,0.5)); transition: transform 0.3s, filter 0.3s; }
+  .portal-card:hover .portal-icon { transform: scale(1.15) rotate(-5deg); filter: drop-shadow(0 0 20px rgba(255,180,0,0.8)); }
   .portal-card h3 { font-size: 1rem; letter-spacing: 0.1em; margin-bottom: 0.6rem; color: #ffd700; }
   .portal-card p { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.8rem; color: #a08060; line-height: 1.5; }
 
-  /* DONATION SECTION */
+  /* ========== DONATION SECTION ========== */
   .donation-box {
     background: linear-gradient(135deg, rgba(139,0,0,0.2), rgba(74,0,128,0.2));
     border: 2px solid rgba(255,215,0,0.3);
-    border-radius: 0;
     clip-path: polygon(16px 0%, 100% 0%, calc(100% - 16px) 100%, 0% 100%);
     padding: 2rem;
     margin: 2rem auto;
     text-align: center;
     max-width: 600px;
+    position: relative;
+    overflow: hidden;
   }
-  .donation-box h3 { font-family: 'Cinzel Decorative', serif; color: #ffd700; margin-bottom: 0.5rem; font-size: 1.3rem; }
-  .donation-box .bank-name { font-size: 0.9rem; color: #ff8c00; letter-spacing: 0.15em; margin: 0.5rem 0; }
+  /* Brillo pulsante donación */
+  .donation-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(255,100,0,0.08) 0%, transparent 60%);
+    animation: donationGlow 3s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes donationGlow {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+  }
+  .donation-box h3 { font-family: 'Cinzel Decorative', serif; color: #ffd700; margin-bottom: 0.5rem; font-size: 1.3rem; position: relative; }
+  .donation-box .bank-name { font-size: 0.9rem; color: #ff8c00; letter-spacing: 0.15em; margin: 0.5rem 0; position: relative; }
   .donation-account {
     background: rgba(0,0,0,0.6);
     padding: 1rem;
@@ -132,6 +253,12 @@
     letter-spacing: 0.1em;
     color: #ffd700;
     word-break: break-all;
+    position: relative;
+    animation: accountFlicker 4s ease-in-out infinite;
+  }
+  @keyframes accountFlicker {
+    0%, 95%, 100% { text-shadow: 0 0 8px rgba(255,215,0,0.5); }
+    96% { text-shadow: 0 0 20px rgba(255,215,0,0.9), 0 0 40px rgba(255,120,0,0.5); }
   }
   .donation-copy {
     background: rgba(255,140,0,0.2);
@@ -145,8 +272,9 @@
     margin-top: 0.5rem;
     clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
     transition: all 0.2s;
+    position: relative;
   }
-  .donation-copy:hover { background: rgba(255,140,0,0.4); }
+  .donation-copy:hover { background: rgba(255,140,0,0.4); box-shadow: 0 0 15px rgba(255,140,0,0.3); }
   .donation-thanks { font-size: 0.7rem; color: #c0a080; margin-top: 1rem; font-style: italic; }
 
   /* SOCIAL GRID */
@@ -163,17 +291,67 @@
     text-transform: uppercase;
     clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
     transition: all 0.25s;
+    position: relative; overflow: hidden;
   }
-  .social-link:hover { color: #ffd700; border-color: #ff8c00; background: rgba(255,100,0,0.1); transform: translateY(-2px); }
+  .social-link::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,100,0,0.08), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+  }
+  .social-link:hover::before { transform: translateX(100%); }
+  .social-link:hover { color: #ffd700; border-color: #ff8c00; background: rgba(255,100,0,0.1); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,80,0,0.15); }
 
   /* DIVIDER */
   .divider { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #ff4d00, #ffd700, #ff4d00, transparent); position: relative; z-index: 1; margin: 0.5rem 0; }
   .divider::before { content: '⚔'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #050305; padding: 0 1rem; color: #ffd700; font-size: 0.9rem; }
 
-  /* LORE STRIP */
-  .lore-strip { background: linear-gradient(135deg, rgba(60,0,0,0.4), rgba(30,0,60,0.4)); border: 1px solid rgba(255,80,0,0.15); padding: 2rem; text-align: center; max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
-  .lore-strip p { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; line-height: 1.8; color: #c8a878; }
+  /* ========== LORE STRIP ========== */
+  .lore-strip {
+    background: linear-gradient(135deg, rgba(60,0,0,0.4), rgba(30,0,60,0.4));
+    border: 1px solid rgba(255,80,0,0.15);
+    padding: 2rem; text-align: center;
+    max-width: 800px; margin: 0 auto;
+    position: relative; z-index: 1;
+    overflow: hidden;
+  }
+  .lore-strip::before {
+    content: '🔥';
+    position: absolute; font-size: 8rem; opacity: 0.04;
+    top: -1rem; left: -1rem; pointer-events: none;
+    animation: loreFloat 6s ease-in-out infinite;
+  }
+  .lore-strip::after {
+    content: '🐉';
+    position: absolute; font-size: 8rem; opacity: 0.04;
+    bottom: -1rem; right: -1rem; pointer-events: none;
+    animation: loreFloat 6s ease-in-out infinite reverse;
+  }
+  @keyframes loreFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+  }
+  .lore-strip p { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; line-height: 1.8; color: #c8a878; position: relative; z-index: 1; }
   .highlight { color: #ffd700; font-style: normal; font-weight: bold; }
+
+  /* ========== STATS BAR ========== */
+  .stats-bar {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+    padding: 1.5rem 2rem; position: relative; z-index: 1;
+    max-width: 700px; margin: 0 auto 1rem;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem; color: #ffd700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.5);
+    display: block; animation: statGlow 2s ease-in-out infinite alternate;
+  }
+  @keyframes statGlow {
+    from { text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+    to { text-shadow: 0 0 25px rgba(255,215,0,0.7), 0 0 50px rgba(255,80,0,0.3); }
+  }
+  .stat-label { font-size: 0.55rem; letter-spacing: 0.3em; color: #907060; text-transform: uppercase; }
 
   /* FOOTER */
   footer { text-align: center; padding: 2rem; font-size: 0.65rem; color: #5a4030; border-top: 1px solid rgba(255,80,0,0.1); position: relative; z-index: 1; }
@@ -187,10 +365,16 @@
   .reveal.visible { opacity: 1; transform: none; }
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: #050305; }
-  ::-webkit-scrollbar-thumb { background: #8b0000; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(#8b0000, #ff4500); border-radius: 3px; }
 </style>
 </head>
 <body>
+
+<!-- Cursor de fuego -->
+<div class="fire-cursor" id="fireCursor"></div>
+
+<!-- Barra de rayo superior -->
+<div class="lightning-bar"></div>
 
 <canvas id="particles"></canvas>
 
@@ -205,8 +389,9 @@
 </nav>
 
 <div class="hero">
+  <div class="fire-ring"></div>
   <p class="eyebrow">🐉 Dragón Primordial · La Era Salvaje</p>
-  <h1>🔥 PORTAL<br>DEL DRAGÓN 🔥</h1>
+  <h1 class="flame-text" data-text="🔥 PORTAL DEL DRAGÓN 🔥">🔥 PORTAL<br>DEL DRAGÓN 🔥</h1>
   <p class="hero-tagline">
     Un solo lugar para todo: Bestias y Monstruos, Galería de Arte,<br>
     Generador con IA y más. Elige tu destino.
@@ -220,31 +405,56 @@
 
 <div class="divider"></div>
 
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stat-item">
+    <span class="stat-num">🐲</span>
+    <span class="stat-label">Bestias</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">🎨</span>
+    <span class="stat-label">Arte</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">✨</span>
+    <span class="stat-label">IA</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">🔥</span>
+    <span class="stat-label">Comunidad</span>
+  </div>
+</div>
+
 <!-- SECCIÓN DE PORTALES / LINKS PRINCIPALES -->
 <section id="portales">
   <h2 class="section-title reveal">🌐 PORTALES DEL DRAGÓN</h2>
   <p class="section-sub reveal">Accede a todos mis mundos desde aquí</p>
   <div class="portal-grid reveal">
+
     <a href="https://www.roblox.com/es/games/103451711855402/BESTIAS-Y-MONSTRUOS" target="_blank" class="portal-card">
       <span class="portal-icon">🐲🔥</span>
       <h3>BESTIAS Y MONSTRUOS</h3>
       <p>Juego de Roblox · Elige tu bestia · Domina la Era Salvaje</p>
     </a>
-    <a href="#" id="https://dragonprimordial12-netizen.github.io/DragonP_Galeria_de_Dibujos/" class="portal-card" onclick="alert('📸 La galería de dibujos estará disponible pronto como sitio independiente. Mientras, sígueme en TikTok @geni2012_'); return true;"><!--galeriaLink-->
+
+    <a href="https://dragonprimordial12-netizen.github.io/DragonP_Galeria_de_Dibujos/" target="_blank" class="portal-card">
       <span class="portal-icon">🎨✏️</span>
       <h3>GALERÍA DE DIBUJOS</h3>
       <p>Todas las obras de geni2012_ · Comisiones abiertas</p>
     </a>
-    <a href="#" id="https://dragonprimordial12-netizen.github.io/DragonP_Generador_de_Arte/" class="portal-card" onclick="alert('✨ El Generador de Arte con IA estará disponible pronto en su propia web. Por ahora, usa los comandos en Discord o TikTok'); return false;"><!--generadorLink-->
+
+    <a href="https://dragonprimordial12-netizen.github.io/DragonP_Generador_de_Arte/" target="_blank" class="portal-card">
       <span class="portal-icon">✨🖼️</span>
       <h3>GENERADOR DE ARTE IA</h3>
       <p>Crea imágenes con inteligencia artificial · Gratis</p>
     </a>
+
     <a href="https://www.atom.bio/dragonprimordial12" target="_blank" class="portal-card">
       <span class="portal-icon">🔗⚡</span>
       <h3>ATOM.BIO · ENLACES</h3>
       <p>Todos mis links en un solo lugar · atom.bio/dragonprimordial12</p>
     </a>
+
   </div>
 </section>
 
@@ -257,7 +467,7 @@
   
   <div class="donation-box reveal">
     <h3>🐉 DONACIONES VOLUNTARIAS</h3>
-    <p style="font-size:0.8rem; margin-bottom:0.8rem;">Cualquier granito de arena es bienvenido y ayuda a seguir creando contenido, arte y el juego.</p>
+    <p style="font-size:0.8rem; margin-bottom:0.8rem; position:relative;">Cualquier granito de arena es bienvenido y ayuda a seguir creando contenido, arte y el juego.</p>
     <div class="bank-name">🏦 BANCO PICHINCHA · ECUADOR</div>
     <div class="donation-account" id="accountNumber">2215350861</div>
     <button class="donation-copy" onclick="copyAccount()">📋 COPIAR NÚMERO DE CUENTA</button>
@@ -307,41 +517,136 @@
 
 <footer>
   <span>🐉 DRAGÓN PRIMORDIAL</span> · Bestias y Monstruos · Arte · IA · Comunidad<br>
-  <span style="font-size:0.6rem;">© 2024 - La Era Salvaje te espera 🔥</span><br>
+  <span style="font-size:0.6rem;">© 2025 - La Era Salvaje te espera 🔥</span><br>
   <span style="font-size:0.55rem;">Banco Pichincha · Cuenta 2215350861 · Apoya el arte y el juego</span>
 </footer>
 
 <script>
-  // ==================== PARTICULAS (FUEGO) ====================
+  // ==================== CURSOR DE FUEGO ====================
+  const cursor = document.getElementById('fireCursor');
+  const trail = [];
+  const TRAIL_COUNT = 8;
+
+  for (let i = 0; i < TRAIL_COUNT; i++) {
+    const dot = document.createElement('div');
+    dot.style.cssText = `
+      position:fixed; border-radius:50%; pointer-events:none; z-index:99998;
+      transform:translate(-50%,-50%); mix-blend-mode:screen;
+      background:radial-gradient(circle, rgba(255,200,0,0.8) 0%, rgba(255,80,0,0.4) 50%, transparent 80%);
+      transition: opacity 0.1s;
+    `;
+    document.body.appendChild(dot);
+    trail.push({ el: dot, x: 0, y: 0 });
+  }
+
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function updateTrail() {
+    trail.forEach((t, i) => {
+      const factor = (i + 1) / TRAIL_COUNT;
+      t.x += (mouseX - t.x) * (0.15 + factor * 0.1);
+      t.y += (mouseY - t.y) * (0.15 + factor * 0.1);
+      const size = (1 - factor) * 14 + 2;
+      t.el.style.left = t.x + 'px';
+      t.el.style.top = t.y + 'px';
+      t.el.style.width = size + 'px';
+      t.el.style.height = size + 'px';
+      t.el.style.opacity = (1 - factor) * 0.6;
+    });
+    requestAnimationFrame(updateTrail);
+  }
+  updateTrail();
+
+  // ==================== PARTICULAS (FUEGO MEJORADO) ====================
   const canvas = document.getElementById('particles');
   const ctx = canvas.getContext('2d');
   let W = canvas.width = window.innerWidth;
   let H = canvas.height = window.innerHeight;
   window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
 
-  const embers = Array.from({ length: 100 }, () => ({
+  const embers = Array.from({ length: 120 }, () => ({
     x: Math.random() * W, y: H + Math.random() * 100,
-    size: Math.random() * 2.5 + 0.5, speed: Math.random() * 0.7 + 0.2,
-    drift: (Math.random() - 0.5) * 0.4, alpha: Math.random() * 0.6 + 0.1,
-    hue: Math.random() * 50 + 10
+    size: Math.random() * 3 + 0.5, speed: Math.random() * 0.9 + 0.2,
+    drift: (Math.random() - 0.5) * 0.6, alpha: Math.random() * 0.6 + 0.1,
+    hue: Math.random() * 50 + 10,
+    wobble: Math.random() * Math.PI * 2,
+    wobbleSpeed: (Math.random() - 0.5) * 0.05
+  }));
+
+  // Partículas grandes tipo bola de fuego
+  const fireballs = Array.from({ length: 6 }, () => ({
+    x: Math.random() * W, y: H + Math.random() * 200,
+    size: Math.random() * 6 + 4, speed: Math.random() * 0.4 + 0.15,
+    drift: (Math.random() - 0.5) * 0.3, alpha: Math.random() * 0.25 + 0.05,
+    hue: Math.random() * 30 + 5
   }));
 
   function drawEmbers() {
     ctx.clearRect(0, 0, W, H);
-    embers.forEach(e => {
+
+    // Fireballs
+    fireballs.forEach(e => {
       e.y -= e.speed;
       e.x += e.drift;
+      if (e.y < -20) { e.y = H + 20; e.x = Math.random() * W; }
+      const grad = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.size);
+      grad.addColorStop(0, `hsla(${e.hue}, 100%, 80%, ${e.alpha})`);
+      grad.addColorStop(0.5, `hsla(${e.hue + 10}, 100%, 55%, ${e.alpha * 0.5})`);
+      grad.addColorStop(1, 'transparent');
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
+
+    // Embers normales
+    embers.forEach(e => {
+      e.y -= e.speed;
+      e.wobble += e.wobbleSpeed;
+      e.x += e.drift + Math.sin(e.wobble) * 0.3;
       e.alpha += (Math.random() - 0.5) * 0.02;
-      e.alpha = Math.max(0.05, Math.min(0.7, e.alpha));
+      e.alpha = Math.max(0.05, Math.min(0.8, e.alpha));
       if (e.y < -10) { e.y = H + 10; e.x = Math.random() * W; }
       ctx.beginPath();
       ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${e.hue}, 100%, 60%, ${e.alpha})`;
+      ctx.fillStyle = `hsla(${e.hue}, 100%, 65%, ${e.alpha})`;
       ctx.fill();
     });
+
     requestAnimationFrame(drawEmbers);
   }
   drawEmbers();
+
+  // ==================== EFECTO CLICK - EXPLOSION DE FUEGO ====================
+  document.addEventListener('click', e => {
+    for (let i = 0; i < 12; i++) {
+      const spark = document.createElement('div');
+      const angle = (i / 12) * Math.PI * 2;
+      const dist = Math.random() * 60 + 20;
+      spark.style.cssText = `
+        position:fixed; left:${e.clientX}px; top:${e.clientY}px;
+        width:${Math.random() * 6 + 3}px; height:${Math.random() * 6 + 3}px;
+        border-radius:50%; pointer-events:none; z-index:99997;
+        background: hsl(${Math.random() * 40 + 5}, 100%, 65%);
+        transform:translate(-50%,-50%);
+        box-shadow: 0 0 6px rgba(255,150,0,0.8);
+        transition: all 0.5s ease-out;
+      `;
+      document.body.appendChild(spark);
+      setTimeout(() => {
+        spark.style.left = (e.clientX + Math.cos(angle) * dist) + 'px';
+        spark.style.top = (e.clientY + Math.sin(angle) * dist) + 'px';
+        spark.style.opacity = '0';
+        spark.style.transform = 'translate(-50%,-50%) scale(0.2)';
+      }, 10);
+      setTimeout(() => spark.remove(), 550);
+    }
+  });
 
   // ==================== COPIAR CUENTA ====================
   function copyAccount() {
@@ -354,26 +659,19 @@
   }
 
   function showToast(msg) {
-    // Crear toast temporal
     let toast = document.getElementById('dynamicToast');
     if (!toast) {
       toast = document.createElement('div');
       toast.id = 'dynamicToast';
-      toast.style.position = 'fixed';
-      toast.style.bottom = '2rem';
-      toast.style.left = '50%';
-      toast.style.transform = 'translateX(-50%)';
-      toast.style.backgroundColor = 'rgba(0,0,0,0.9)';
-      toast.style.color = '#ffd700';
-      toast.style.border = '1px solid #ff8c00';
-      toast.style.padding = '0.7rem 1.5rem';
-      toast.style.fontFamily = "'Cinzel', serif";
-      toast.style.fontSize = '0.7rem';
-      toast.style.letterSpacing = '0.1em';
-      toast.style.zIndex = '9999';
-      toast.style.borderRadius = '0';
-      toast.style.clipPath = "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)";
-      toast.style.backdropFilter = 'blur(8px)';
+      toast.style.cssText = `
+        position:fixed; bottom:2rem; left:50%; transform:translateX(-50%);
+        background:rgba(0,0,0,0.9); color:#ffd700;
+        border:1px solid #ff8c00; padding:0.7rem 1.5rem;
+        font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.1em;
+        z-index:9999; clip-path:polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+        backdrop-filter:blur(8px); box-shadow: 0 0 20px rgba(255,100,0,0.3);
+        transition: opacity 0.3s;
+      `;
       document.body.appendChild(toast);
     }
     toast.textContent = msg;
@@ -396,16 +694,14 @@
   document.querySelectorAll('.portal-card').forEach(card => {
     card.addEventListener('mousemove', e => {
       const rect = card.getBoundingClientRect();
-      card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
-      card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
+      card.style.transform = `translateY(-6px) rotateX(${-y}deg) rotateY(${x}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
     });
   });
-
-  // ==================== CONTADOR DE VISITAS SIMPLE ====================
-  let visitCount = localStorage.getItem('dp_visitCount') || 0;
-  visitCount = parseInt(visitCount) + 1;
-  localStorage.setItem('dp_visitCount', visitCount);
-  console.log(`🐉 Visitas totales: ${visitCount}`);
 </script>
 </body>
 </html>
